@@ -30,7 +30,7 @@ namespace MP3Sharp
         private readonly Bitstream m_BitStream;
         private readonly Decoder m_Decoder = new Decoder(Decoder.DefaultParams);
         // local variables.
-        private readonly Buffer16BitStereo m_Buffer;
+        private readonly ABuffer m_Buffer;
         private readonly Stream m_SourceStream;
         private readonly int m_BackStreamByteCountRep = 0;
         private short m_ChannelCountRep = -1;
@@ -55,15 +55,12 @@ namespace MP3Sharp
         ///     Creates a new stream instance using the provided filename and chunk size.
         /// </summary>
         public MP3Stream(string fileName, int chunkSize)
-            : this(new FileStream(fileName, FileMode.Open), chunkSize)
+            : this(new FileStream(fileName, FileMode.Open), chunkSize, false)
         {
         }
 
-        /// <summary>
-        ///     Creates a new stream instance using the provided stream as a source, and the default chunk size of 4096 bytes.
-        /// </summary>
-        public MP3Stream(Stream sourceStream)
-            : this(sourceStream, 4096)
+        public MP3Stream(Stream sourceStream, bool isMono)
+            : this(sourceStream, 4096, isMono)
         {
         }
 
@@ -72,13 +69,30 @@ namespace MP3Sharp
         ///     Will also read the first frame of the MP3 into the internal buffer.
         ///     TODO: allow selecting stereo or mono in the constructor (note that this also requires "implementing" the stereo format).
         /// </summary>
-        public MP3Stream(Stream sourceStream, int chunkSize)
+        public MP3Stream(Stream sourceStream, int chunkSize = 4096, bool isMono = false)
         {
             IsEOF = false;
-            FormatRep = SoundFormat.Pcm16BitStereo;
+            //FormatRep = SoundFormat.Pcm16BitStereo;
             m_SourceStream = sourceStream;
             m_BitStream = new Bitstream(new PushbackStream(m_SourceStream, chunkSize));
-            m_Buffer = new Buffer16BitStereo();
+            //m_Buffer = new Buffer16BitStereo();
+            
+            if (isMono)
+            {
+                Decoder.Params ParamsCustom = new Decoder.Params();
+                ParamsCustom.OutputChannels = OutputChannels.LEFT;
+                m_Decoder = new Decoder(ParamsCustom);
+                m_Buffer = new Buffer16BitMono();
+                FormatRep = SoundFormat.Pcm16BitMono;
+                m_ChannelCountRep = 1;
+            }
+            else
+            {
+                m_Buffer = new Buffer16BitStereo();
+                FormatRep = SoundFormat.Pcm16BitStereo;
+                m_ChannelCountRep = 2;
+            }
+            
             m_Decoder.OutputBuffer = m_Buffer;
             // read the first frame. This will fill the initial buffer with data, and get our frequency!
             if (!ReadFrame())

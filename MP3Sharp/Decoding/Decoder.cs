@@ -152,7 +152,7 @@ namespace MP3Sharp.Decoding
 
             decoder.DecodeFrame();
 
-            m_Output.WriteBuffer(1);
+            m_Output.WriteBuffer();
 
             return m_Output;
         }

@@ -68,7 +68,7 @@ namespace MP3Sharp.IO
             m_Bufferp[channel] = (short) (m_Bufferp[channel] + m_Channels);
         }
 
-        public override void WriteBuffer(int val)
+        public override void WriteBuffer()
         {
             int rc = m_OutWave.WriteData(m_Buffer, m_Bufferp[0]);
             for (int i = 0; i < m_Channels; ++i)
@@ -97,6 +97,11 @@ namespace MP3Sharp.IO
         /// </summary>
         public override void SetStopFlag()
         {
+        }
+        
+        public override int Read(byte[] bufferOut, int offset, int count)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -559,7 +559,7 @@ namespace MP3Sharp.Decoding.Decoders
             //if (counter <  609)
             //{
             counter++;
-            buffer.WriteBuffer(1);
+            buffer.WriteBuffer();
             //}
             //else if (counter == 609)
             //{

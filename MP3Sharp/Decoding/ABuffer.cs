@@ -23,6 +23,22 @@ namespace MP3Sharp.Decoding
         public const int OBUFFERSIZE = 2*1152; // max. 2 * 1152 samples per frame
         public const int MAXCHANNELS = 2; // max. number of channels
 
+        // end marker, one past end of array. Same as bufferp[0], but
+        // without the array bounds check.
+        protected int m_End;
+        // Read offset used to read from the stream, in bytes.
+        protected int m_Offset;
+        /// <summary>
+        ///     Gets the number of bytes remaining from the current position on the buffer.
+        /// </summary>
+        public int BytesLeft
+        {
+            get
+            {
+                return m_End - m_Offset;
+            }
+        }
+        
         /// <summary>
         ///     Takes a 16 Bit PCM sample.
         /// </summary>
@@ -50,7 +66,7 @@ namespace MP3Sharp.Decoding
         /// <summary>
         ///     Write the samples to the file or directly to the audio hardware.
         /// </summary>
-        public abstract void WriteBuffer(int val);
+        public abstract void WriteBuffer();
 
         public abstract void Close();
 
@@ -63,5 +79,7 @@ namespace MP3Sharp.Decoding
         ///     Notify the buffer that the user has stopped the stream.
         /// </summary>
         public abstract void SetStopFlag();
+        
+        public abstract int Read(byte[] bufferOut, int offset, int count);
     }
 }

@@ -30,11 +30,12 @@ namespace MP3Sharp
         // Write offset used in append_bytes
         private readonly byte[] m_Buffer = new byte[OBUFFERSIZE * 2]; // all channels interleaved
         private readonly int[] m_Bufferp = new int[MAXCHANNELS]; // offset in each channel not same!
+        
         // end marker, one past end of array. Same as bufferp[0], but
         // without the array bounds check.
-        private int m_End;
+        //private int m_End;
         // Read offset used to read from the stream, in bytes.
-        private int m_Offset;
+        //private int m_Offset;
 
         public Buffer16BitStereo()
         {
@@ -45,7 +46,7 @@ namespace MP3Sharp
         /// <summary>
         ///     Gets the number of bytes remaining from the current position on the buffer.
         /// </summary>
-        public int BytesLeft => m_End - m_Offset;
+        //public int BytesLeft => m_End - m_Offset;
 
         /// <summary>
         ///     Reads a sequence of bytes from the buffer and advances the position of the 
@@ -56,7 +57,7 @@ namespace MP3Sharp
         ///     number of bytes requested if that many bytes are not currently available, or
         ///     zero if th eend of the buffer has been reached.
         /// </returns>
-        public int Read(byte[] bufferOut, int offset, int count)
+        public override int Read(byte[] bufferOut, int offset, int count)
         {
             if (bufferOut == null)
             {
@@ -155,7 +156,7 @@ namespace MP3Sharp
         {
         }
 
-        public override void WriteBuffer(int val)
+        public override void WriteBuffer()
         {
             m_Offset = 0;
 

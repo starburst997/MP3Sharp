@@ -80,7 +80,7 @@ namespace MP3Sharp.Decoding
         /// <summary>
         ///     Write the samples to the file (Random Acces).
         /// </summary>
-        public override void WriteBuffer(int val)
+        public override void WriteBuffer()
         {
             //for (int i = 0; i < channels; ++i) 
             //	bufferp[i] = (short)i;
@@ -106,5 +106,7 @@ namespace MP3Sharp.Decoding
         {
 
         }
+        
+        public override int Read(byte[] bufferOut, int offset, int count) => throw new System.NotImplementedException();
     }
 }
